@@ -1,0 +1,33 @@
+{% extends 'main/main.html' %}
+
+{% block content %}
+<div class="pageView w-100">
+<div class="container ">
+    <div class="card align-center border  border-primary shadow" style="width: fit-content;">
+        <div class="card-body w-100">
+            <h5 class="card-title"></h5>
+            <h6 class="card-subtitle mb-2 text-muted"></h6>
+            <form class="updateProfileForm w-100" method="POST"  enctype="multipart/form-data">
+                    {% csrf_token %}
+                        <br>{{u_form.as_p}}  
+                        <br>{{p_form.as_p}}
+                    <div class="modal-footer">
+                    <a class="card-link" href="{% url 'home' %}"><button type="button"  class="btn btn-secondary">Close</button></a>
+                    <a class="card-link"><button type="submit"  class="btn btn-secondary">Save</button></a>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+
+console.log(document.querySelector(".updateProfileForm").querySelectorAll("input"))
+document.querySelector(".updateProfileForm").querySelectorAll("input").forEach((input) => {
+    console.log(input)
+    input.setAttribute("class", "form-control");
+
+    });
+
+</script>
+{% endblock content %}

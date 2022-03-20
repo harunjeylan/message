@@ -1,0 +1,81 @@
+<main>
+    {% if  request.user.is_authenticated %}
+       <section class="z-index-4">
+      <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" id="sidebar" aria-expanded="false">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+          <!-- <img src="./assets/images/img_snow_wide.jpg" alt="" class="bd-placeholder-img "> -->
+          <span class="fs-4">Sidebar</span>
+
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="#" class="nav-link active" aria-current="page">
+              <svg class="bi me-2" width="16" height="16">
+                <use xlink:href="#home" />
+              </svg>
+              Home
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16">
+                <use xlink:href="#speedometer2" />
+              </svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16">
+                <use xlink:href="#table" />
+              </svg>
+              Orders
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16">
+                <use xlink:href="#grid" />
+              </svg>
+              Products
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg class="bi me-2" width="16" height="16">
+                <use xlink:href="#people-circle" />
+              </svg>
+              Customers
+            </a>
+          </li>
+        </ul>
+        <hr>
+        <div class="dropdown">
+          
+          <a href="{% url 'profile' request.user.email %}" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+            id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="{{request.user.avater.url}}" alt="" width="32" height="32" class="rounded-circle me-2">
+            <strong>{{request.user}}</strong>
+          </a>
+          
+          <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li>
+                <button type="button" value="{{request.user.email}}" class="btn btn-link" onclick="profileView(this)" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Profile
+              </button>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+          {% if request.user.is_authenticated %}
+            <li><a href="{% url 'logout' %}" class="dropdown-item" href="#">Sign out</a></li>
+          {% endif %}  
+          </ul>
+        </div>
+        <div class="mt-5"></div>
+      </div>
+    </section>
+    {% endif %}
+</main> 

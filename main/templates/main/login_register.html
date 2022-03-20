@@ -1,0 +1,66 @@
+{% extends 'main/main.html' %}
+
+{% block content %}
+<div class="pageView">
+<div class="container">
+        
+    <div class="card align-center shadow border border-primary" style="align-content:center">
+        <div class="card-body w-100">
+            <h5 class="card-title">{% if page == 'login_page' %}LOGIN PAGE {% else %} REDISTERATION PAGE {% endif %}</h5><hr><br>
+            <h6 class="card-subtitle mb-2 text-muted"></h6>
+             {% if messages %}
+            <div class="flash-message">
+                {% for message in messages %}
+                    <div class="list-none alert {{message.tags}}"  >
+                         <label>{{message}} </label>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}       
+       {% if page == 'login_page' %}
+            <form class="loginForm w-100" method="POST", action="">
+                {% csrf_token %}
+                {{form.as_p}}
+                
+                <button type="submit" class="btn btn-outline-success">LOGIN</button>
+                    <br><hr>
+                <label >haven't sign up yet <a href="{% url 'register' %}">sign up!</a></label>
+                
+            </form>
+
+        {% else %}
+            <form class="registerationForm w-100" method="POST", action="">
+                {% csrf_token %}
+               {{form.as_p}}
+                <button type="submit" class="btn btn-outline-success">SIGN UP</button>
+                    <br><hr>
+                <label>have alrady account <a href="{% url 'login' %}">login!</a></label>
+            </form>        
+        {% endif %}
+        </div>
+    </div>
+
+</div>
+</div>
+<script type="text/javascript">
+ {% if page == 'login_page' %}   
+document.querySelector(".loginForm").querySelectorAll("input").forEach((input) => {
+    console.log(input)
+    input.setAttribute("class", "form-control");
+
+    });
+    {% else %}
+console.log(document.querySelector(".registerationForm").querySelectorAll("input"))
+document.querySelector(".registerationForm").querySelectorAll("input").forEach((input) => {
+    console.log(input)
+    input.setAttribute("class", "form-control");
+
+    });
+    {% endif %}
+
+setTimeout(function () {
+    $(".flash-message")[0].innerHTML = "";
+}, 3000);
+</script>
+{% endblock content %}
+

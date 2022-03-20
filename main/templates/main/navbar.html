@@ -1,0 +1,62 @@
+  <header>
+  <div class="d-none" id="pageidentfier" aria-expanded="true"></div>
+  <nav class="navbar  navbar-expand navbar-light fixed-top bg-light z-index-2 shadow">
+    <div class="container-fluid z-index-2">
+        <div class="navbar-nav col-lg-4 col-md-6 d-md-flex pl-2 {% if not request.user.is_authenticated %} d-flex {% endif %}{% if page == 'home' %}d-flex{% endif %} fraindes-page" id="fraindes-page" >
+          {% if  request.user.is_authenticated %}
+          <div class="nav-item dropdown navbar-brand ">
+              <a href="{% url 'profile' request.user.username %}" class="d-flex text-decoration-none my-auto py-auto"
+                  id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img src="{{request.user.profile.avater.url}}" alt="" width="32" height="32" class="rounded-circle me-2">
+                  <strong>{{request.user}}</strong>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-light text-small shadow" aria-labelledby="dropdownUser1">
+                  <li><a class="dropdown-item" href="{% url 'home' %}">home</a></li>
+                  <li><hr class="dropdown-divider"></li>
+
+                  <li><a type="button" value="{{request.user.username}}" class="dropdown-item" onclick="profileView(this)" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Profile</a></li>
+                  <li><a class="dropdown-item" href="{% url 'updateProfile' %}">Settings</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}" class="dropdown-item" href="#">Sign out</a></li>
+                  {% endif %}  
+              </ul>
+          </div>
+          <div class="nav-item">
+              <form class="nav-item align-items-center float-end d-flex " method="GET" action="{% url 'home' %}">
+                <input class="form-control me-2" type="search" placeholder="serching friend..." name="serche-friends" list="browsers" aria-label="Search">
+              </form>
+          </div>
+       </div>
+       <div class="navbar-nav col-lg-8 col-md-6 {% if page == 'home' %}d-none{% endif %}  messages-page" id="messages-page">
+          <button class="navbar-brand navbar-toggler d-md-none d-inline" type="button" onclick="homepage()">
+            <img src="../../static/main/assets/images/back--v1.png"/>
+          </button>
+         {% if reciever %}
+         <a type="button" value="{{reciever.username}}" class="d-flex text-decoration-none ms-2 me-5 my-auto py-auto" onclick="profileView(this)" data-bs-toggle="modal" data-bs-target="#staticBackdrop">  
+            <img src="{{reciever.profile.avater.url}}" alt="" width="32" height="32" class="rounded-circle me-2">
+            <strong>{{reciever}}</strong>
+          </a>
+          {% endif %}
+          
+          <form class="nav-item align-items-center float-end d-flex" id="serche-message-form">
+              <input class="form-control  me-2" id="serche-message" type="search" placeholder="serching messages..." name="serche-message" list="browsers" aria-label="Search">
+          </form>
+          </div>
+          </div>
+          {% else %}
+          <div class="col-lg-8 col-md-6 d-md-flex messages-page" id="messages-page">
+          <a class="navbar-brand" href="{% url 'login' %}">
+             <button type="button" value="{{request.user.username}}" class="btn btn-primary" onclick="profileView(this)" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Login
+              </button>
+            </a>
+          <a class="navbar-brand" href="{% url 'register' %}">
+            <button type="button" value="{{request.user.username}}" class="btn btn-primary" onclick="profileView(this)" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Resister
+              </button></a>
+        </div>
+        {% endif %}
+      </div>
+  </nav>
+</header>

@@ -1,0 +1,59 @@
+<div class="col-lg-4 col-md-6 {% if page == 'home' %}d-flex z-index-2 {% endif %} bg-body d-md-flex   shadow fraindes-col" id="fraindes-col">
+    <div class="list-group position-absolute " >
+        {% for user_and_mess in friend_info %}
+            {% if user_and_mess.obj.user.username %}    
+                {% if user_and_mess.obj.user == request.user %}
+
+                
+                <a href="{% url 'message' user_and_mess.obj.friends.username  %}" onclick="homepage()" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                    <img src="{{user_and_mess.obj.friends.profile.avater.url}}" alt="twbs" width="32" height="32"
+                    class="rounded-circle flex-shrink-0">
+                    <div class="d-flex gap-2 w-100 justify-content-between">
+                    <div>
+                        <h6 class="mb-0">{{user_and_mess.obj.friends}}</h6>
+                        {% if user_and_mess.mess_length == 0 %}
+                                <p class="mb-0 opacity-75">No message yet.</p>     
+                            {% else %}
+                            <p class="mb-0 opacity-75">{{user_and_mess.mes}}</p>
+                        {% endif %}
+                        
+                    </div>
+                    </div>
+                </a>
+                {% else %}
+                <a href="{% url 'message' user_and_mess.obj.user.username  %}" onclick="homepage()" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                    <img src="{{user_and_mess.obj.user.profile.avater.url}}" alt="twbs" width="32" height="32"
+                    class="rounded-circle flex-shrink-0">
+                    <div class="d-flex gap-2 w-100 justify-content-between">
+                    <div>
+                        <h6 class="mb-0">{{user_and_mess.obj.user}}</h6>
+                        {% if user_and_mess.mess_length == 0 %}
+                                <p class="mb-0 opacity-75">No message yet.</p>     
+                            {% else %}
+                            <p class="mb-0 opacity-75">{{user_and_mess.mes}}.</p>
+                        {% endif %}
+                    </div>
+                    </div>
+                </a>
+                {% endif %}
+            {% else %}
+
+                <a href="{% url 'message' user_and_mess.obj.username  %}" onclick="homepage()" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                    <img src="{{user_and_mess.obj.profile.avater.url}}" alt="twbs" width="32" height="32"
+                    class="rounded-circle flex-shrink-0">
+                    <div class="d-flex gap-2 w-100 justify-content-between">
+                    <div>
+                        <h6 class="mb-0">{{user_and_mess.obj}}</h6>
+                        {% if user_and_mess.mess_length == 0 %}
+                                <p class="mb-0 opacity-75">No message yet.</p>     
+                            {% else %}
+                            <p class="mb-0 opacity-75">{{user_and_mess.mes}}.</p>
+                        {% endif %}
+                    </div>
+                    </div>
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+    
+</div>

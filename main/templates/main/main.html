@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+{% load static %}
+{% load %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Hugo 0.88.1">
+
+  {% if title %}``
+  <title>{{ title }}</title>
+  {% else %}
+  <title>no title</title>
+  {% endif %}
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="{% static 'main/assets/css/style.css' %}">
+
+</head>
+
+<body class="body_components">
+  {% include 'main/navbar.html' %}
+  {% block content %}
+  {% endblock content %}
+  {% if messages %}
+            <div class="flash-messages position-absoliute start-50 ">
+              {% if  request.user.is_authenticated and messages %}
+                {% for message in messages %}
+                    <div class="list-none alert {{message.tags}}"  >
+                         <label>{{message}} </label>
+                    </div>
+                {% endfor %}
+              {% endif %}
+            </div>
+   {% endif %}
+</body>
+
+
+
+
+
+<script src="{% static 'main/assets/js/bootstrap.bundle.js' %}"></script>
+<script src="{% static 'main/assets/js/myFunction.js' %}"></script>
+<script src="{% static 'main/assets/js/jquery-3.1.1.min.js' %}"></script>
+
+<script type="text/javascript">
+setTimeout(function () {
+  $(".flash-messages")[0].innerHTML = "";
+}, 3000);
+</script>
+
+{% if reciever %}
+<script type="text/javascript">
+
+
+  $(document).on('submit', '#serche-message-form', function (e) {
+      e.preventDefault();
+  });
+
+
+  function getExtension(filename) {
+    var parts = filename.split('.');
+    return  parts[parts.length - 1];
+  }
+  function isAudio(filename) {
+    if (filename != null && filename != '') {
+      var ext = getExtension(filename);
+      var audioExt = ['mp3', 'ogg', 'wav']
+      if (audioExt.includes(ext.toLowerCase())) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  function isImage(filename) {
+    if (filename != null && filename != '') {
+      var ext = getExtension(filename);
+      var imageExt = ['jpg', 'jpeg', 'jfif', 'pjpeg', 'jpeg', 'jfif', 'png', 'svg', 'webp']
+      if (imageExt.includes(ext.toLowerCase())) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  function isVideo(filename = null) {
+    if (filename != null && filename != '') {
+      var ext = getExtension(filename);
+      var videoExt = ['m4v', 'avi', 'mpg', 'mp4', 'wmv']
+      if (videoExt.includes(ext.toLowerCase())) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  var TimeSince = function (str) {
+    var strToDate = new Date(str);
+
+    var month = strToDate.getMonth() + 1;
+    var day = strToDate.getDate();
+    var year = strToDate.getFullYear();
+
+    if (month < 10) { month = '0' + month; }
+    if (day < 10) { day = '0' + day; }
+    var x3 = month + '-' + day + '-' + year;
+
+    var hour = strToDate.getHours();
+    var minute = strToDate.getMinutes();
+    var second = strToDate.getSeconds();
+    if (hour < 10) { hour = '0' + hour; }
+    if (minute < 10) { minute = '0' + minute; }
+    var x3 = x3 + ' ' + hour + ':' + minute + ':' + second
+    return x3
+  }
+
+  var messageImage = function (imagePath) {
+              if (imagePath != '' && imagePath != null) {
+                var imagePara = document.createElement("img");
+                imagePara.setAttribute("src", "/media/" + imagePath);
+                imagePara.setAttribute("class", "messageFiles");
+                imagePara.setAttribute("width", "100%");
+                imagePara.setAttribute("alt", "image");
+
+                return imagePara;
+              }
+              return null
+            }
+  var messageFile = function (filePath) {
+    if (filePath != '' && filePath != null) {
+
+      if (isVideo(filePath)) {
+        var temp = $("#display-0")[0].querySelector("#video-display")
+        var cloneTemp = temp.cloneNode(true);
+        cloneTemp.firstElementChild.setAttribute("src", "/media/" + filePath);
+        cloneTemp.firstElementChild.setAttribute("type", "video/" + getExtension(filePath));
+        cloneTemp.firstElementChild.setAttribute("class", "messageFiles");
+        return cloneTemp;
+      } else if (isAudio(filePath)) {
+        var temp = $("#display-0")[0].querySelector("#audio-display")
+        var cloneTemp = temp.cloneNode(true);
+        cloneTemp.firstElementChild.setAttribute("src", "/media/" + filePath);
+        cloneTemp.firstElementChild.setAttribute("type", "audio/" + getExtension(filePath));
+        cloneTemp.firstElementChild.setAttribute("class", "messageFiles");
+        return cloneTemp
+      } else {
+        console.log($("#display-0")[0].querySelector("#object-display"))
+        var temp = $("#display-0")[0].querySelector("#object-display")
+        var cloneTemp = temp.cloneNode(true);
+        cloneTemp.firstElementChild.setAttribute("href", "/media/" + filePath);
+        cloneTemp.firstElementChild.setAttribute("class", "messageFiles text-decoration-none btn btn-outline-primary mx-auto");
+
+        cloneTemp.firstElementChild.innerHTML += filePath.split("/")[filePath.split("/").length-1]
+
+        return cloneTemp;
+      }
+    } else {
+      return null
+    }
+  }
+
+  $(document).ready(function () {
+    setInterval(function () {
+      $.ajax({
+        type: 'GET',
+        url: "/getMessages/{{reciever.username}}/",
+        success: function (response) {
+          var temp1 = response.messages.filter(message => message.text != "");
+          var temp2 = temp1.filter(message => message.text.includes($("#serche-message")[0].value)); 
+          var result =($("#serche-message")[0].value != "")? temp2 : response.messages;
+
+          
+
+          $("#go-down")[0].addEventListener("click", function () {
+            var elmnt = document.getElementById("messages-col");
+            var y = elmnt.scrollHeight
+            elmnt.scroll(0, y)
+          });
+
+        var startLoop = ($("#display-message")[0].children.length > result.length || $("#display-message")[0].getAttribute("updateMessage") == "true")? 0 : $("#display-message")[0].children.length
+        if(($("#display-message")[0].children.length > result.length || $("#display-message")[0].getAttribute("updateMessage") == "true")){
+          $("#display-message").empty();
+          $("#display-message")[0].setAttribute("updateMessage", "false")
+        }
+
+
+        for (let i = startLoop; i < result.length; i++) {
+          
+            var elem_li =  document.createElement("li");
+            var elem_btn =  document.createElement("button");
+            var url_link = "{% url 'home' %}"
+            
+
+            if (result[i].sender_id == {{ request.user.id }}){
+              var temp = $("#display-0")[0].querySelector(".display-1").querySelector(".display-a");
+
+              var cloneTemp = temp.cloneNode(true);
+
+
+              var messMenu = cloneTemp.querySelector(".messMenu")
+              messMenu.innerHTML = ""
+              console.log(result[i].id)
+
+              var cloneElem_btn1 = elem_btn.cloneNode(true);
+              var cloneElem_btn2 = elem_btn.cloneNode(true);
+              var cloneElem_li1 = elem_li.cloneNode(true);
+              var cloneElem_li2 = elem_li.cloneNode(true);
+
+              cloneElem_btn1.setAttribute("class", "btn btn-link dropdown-item ");
+              cloneElem_btn1.setAttribute("style", "max-width:80%;");
+
+              cloneElem_btn2.setAttribute("class", "btn btn-link  dropdown-item");
+              cloneElem_btn2.setAttribute("style", "max-width: 80%;");
+
+              cloneElem_btn1.setAttribute("value", result[i].id);
+              cloneElem_btn1.setAttribute("onclick", "updateMessage(this)")
+              cloneElem_btn1.innerHTML = "edit mess"
+
+              cloneElem_li1.appendChild(cloneElem_btn1);
+              messMenu.appendChild(cloneElem_li1);
+              
+              cloneElem_btn2.setAttribute("value", result[i].id);
+              cloneElem_btn2.setAttribute("onclick", "deleteMessage(this)")
+              cloneElem_btn2.innerHTML = "delete"
+
+              cloneElem_li2.appendChild(cloneElem_btn2);
+              messMenu.appendChild(cloneElem_li2);
+
+              cloneTemp.querySelector(".textMess").innerHTML = result[i].text;
+              cloneTemp.querySelector(".timeMess").innerHTML = TimeSince(result[i].updated);
+
+              if (messageImage(result[i].image) != null) {
+                cloneTemp.querySelector(".card").appendChild(messageImage(result[i].image));
+              }
+              if (messageFile(result[i].file) != null) {
+                cloneTemp.querySelector(".card").appendChild(messageFile(result[i].file));
+              }
+              $("#display-message")[0].appendChild(cloneTemp);
+
+            } else {
+              var temp = $("#display-0")[0].querySelector(".display-2").querySelector(".display-a");
+              var cloneTemp = temp.cloneNode(true);
+
+
+              var messMenu = cloneTemp.querySelector(".messMenu")
+              messMenu.innerHTML = ""
+
+              
+              var cloneElem_btn2 = elem_btn.cloneNode(true);
+              var cloneElem_li2 = elem_li.cloneNode(true);
+
+              cloneElem_btn2.setAttribute("class", "btn btn-link  dropdown-item");
+              cloneElem_btn2.setAttribute("style", "max-width: 80%;");
+
+              cloneElem_btn2.setAttribute("value", result[i].id);
+              cloneElem_btn2.setAttribute("onclick", "deleteMessage(this)")
+              cloneElem_btn2.innerHTML = "delete"
+
+              cloneElem_li2.appendChild(cloneElem_btn2);
+              messMenu.appendChild(cloneElem_li2);
+
+              cloneTemp.querySelector(".textMess").innerHTML = result[i].text;
+              cloneTemp.querySelector(".timeMess").innerHTML = TimeSince(result[i].updated);
+
+              if (messageImage(result[i].image) != null) {
+                cloneTemp.querySelector(".card").appendChild(messageImage(result[i].image));
+              }
+              if (messageFile(result[i].file) != null) {
+                cloneTemp.querySelector(".card").appendChild(messageFile(result[i].file));
+              }
+              $("#display-message")[0].appendChild(cloneTemp);
+            }
+          }
+          },
+          error: function (response) {
+            alert('An error occured')
+          }
+        });
+      }, 1000);
+
+      })
+  var fileType = function (filePath) {
+    if (filePath.val() != '') {
+      if (filePath[0].files[0].type.split("/")[0] == "image") {
+        return "image"
+      } else {
+        return "file"
+      }
+    } else {
+      return "none"
+    }
+  }
+
+
+  
+$(document).on('submit', '#sendMessageForm', function (e) {
+  e.preventDefault();
+  if(document.getElementById("sendMessageForm").getAttribute("mode") == "send"){
+      
+      var form_data = new FormData();
+      form_data.append(fileType($("#fileInput")), $("#fileInput")[0].files[0]);
+      form_data.append('text', $("#message").val());
+      form_data.append("csrfmiddlewaretoken", $('input[name=csrfmiddlewaretoken]').val());
+      $.ajax({
+        url: '/getMessages/{{ reciever.username }}/',
+        method: "POST",
+        dataType: 'json',
+        cache: false,
+        processData: false,
+        contentType: false,
+        data: form_data,
+        success: function (data) {
+          console.log(data)
+          
+        }
+      });
+  }else{
+    var curentEditingMess = document.getElementById("curentEditingMess")
+    var form_data = new FormData();
+    form_data.append("updateMessage", "true");
+    form_data.append('messageId', curentEditingMess.getAttribute("value"));
+    if(fileType($("#fileInput")) != "none"){
+      form_data.append(fileType($("#fileInput")), $("#fileInput")[0].files[0]);
+    }
+    form_data.append('text', $("#message").val());
+    form_data.append("csrfmiddlewaretoken", $('input[name=csrfmiddlewaretoken]').val());
+    $.ajax({
+      url: "/getMessages/{{reciever.username}}/",
+      method: "POST",
+      dataType: 'json',
+      cache: false,
+      processData: false,
+      contentType: false,
+      data: form_data,
+      success: function (data) {
+        console.log(data)
+        $("#display-message")[0].setAttribute("updateMessage", "true")
+      }
+    });
+    
+    document.getElementById("sendMessageForm").setAttribute("mode", "send")
+  }
+    document.getElementById('fileInput').value = ''
+    document.getElementById('message').value = ''
+});
+
+
+  function deleteMessage(e) {
+    var form_data = new FormData();
+    form_data.append("deleteMessage", "true");
+    form_data.append('messageId', e.getAttribute("value"));
+    form_data.append("csrfmiddlewaretoken", $('input[name=csrfmiddlewaretoken]').val());
+    $.ajax({
+      url: "/getMessages/{{reciever.username}}/",
+      method: "POST",
+      dataType: 'json',
+      cache: false,
+      processData: false,
+      contentType: false,
+      data: form_data,
+      success: function (data) {
+        $("#display-message")[0].setAttribute("deleteMessage", "true")
+        console.log(data)
+      }
+    });
+  }
+
+  function updateMessage(e) {
+
+      var message = e.parentNode.parentNode.parentNode.parentNode
+      {% comment %} var messagePath = (message.querySelector(".messageFiles").getAttribute("src") != null)?message.querySelector(".messageFiles").getAttribute("src"):message.querySelector(".messageFiles").getAttribute("href") {% endcomment %}
+      var messageText = message.querySelector(".textMess").innerHTML
+      $(".messageInput")[0].querySelector("textarea").value = messageText
+      document.getElementById("sendMessageForm").setAttribute("mode", "update")
+
+      e.setAttribute("id", "curentEditingMess")
+      
+      console.log($(".messageInput")[0].querySelector("input[type='file']"))
+
+    
+  }
+
+</script>
+{% endif %}
+
+
+</body>
+
+</html>

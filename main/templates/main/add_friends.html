@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<br><br><br><br><br><br><br><br>
+
+<div class="login_register">
+        {% if messages %}
+    <ul class="message">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{message.tags}}" {% endif %} >
+                {{message}}
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="POST" action="">
+        {% csrf_token %}
+        <input type="username" placeholder="add friend..." name="email"/>
+        <input type="submit" value="add">
+    </form>
+</div>
+{% endblock content %}

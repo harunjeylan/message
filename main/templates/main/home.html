@@ -1,0 +1,20 @@
+{% extends 'main/main.html' %}
+
+{% block content %}
+
+{% if  request.user.is_authenticated %}
+
+    {% include 'main/profile.html' %}
+    <main class="z-insex-2">
+    <section class=" main-section">
+        <div class="container-fluid">
+        <div class="row ">
+            {% include 'main/friends.html' %}
+            {% include 'main/messages.html' %}
+        </div>
+        </div>
+    </section>
+    </main>
+{% else %}
+{% endif %}
+{% endblock content %}

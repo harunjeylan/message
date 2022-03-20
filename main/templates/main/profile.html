@@ -1,0 +1,96 @@
+  <!-- Modal -->
+  <div class="modal fade position-fixed  w-80" id="staticBackdrop" data-bs-backdrop="static"
+    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog z-index-1 modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Profile</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body ">
+
+          <div class="card shadow" style="width: 100%;">
+              <img src="" class="card-img-top profileImage" alt="">
+              <div class="card-body">
+                <h6 class="card-title Name"></h6><br><hr>
+                <p class="card-text"><h6 class="Bio"></h6><p>Bio</p></p>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"><h6 class="FirstName"></h6><p>First Name</p></li>
+                <li class="list-group-item"><h6 class="LastName"></h6><p>Last Name</p></li>
+                <li class="list-group-item"><h6 class="NickName"></h6><p>Nick Name</p></li>
+                <li class="list-group-item"><h6 class="EmailAddress"></h6><p>Email Address</p></li>
+                <li class="list-group-item"><h6 class="Username"></h6><p>Username</p></li>
+              </ul>
+              <div class="card-body more-link">
+              </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          {% if message.sender == request.user %}
+            <a class="card-link" href="{% url 'logout' %}"><button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Logout</button></a>
+            {% endif %}
+          <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script type="text/javascript">
+
+function profileView(e){
+    $.ajax({
+        url: '/profile/' + e.getAttribute("value"),
+        method: "GET",
+        dataType:'json',
+        cache:false,
+        processData: false,
+        contentType: false,
+        data:{},
+        success:function (data) {
+            console.log(data)
+
+            console.log($(".modal-body")[0].querySelectorAll("h6"))
+            $(".modal-body")[0].querySelectorAll("h6").forEach((node) => {
+              console.log(node)
+                node.innerHtml = ""
+
+              });
+           var profileImage = $(".modal-body")[0].querySelector(".profileImage");
+                    profileImage.setAttribute("src", data.user[0].avater);
+                    profileImage.setAttribute("alt", "profileimage");
+
+                      
+            $(".modal-body")[0].querySelector(".Name").innerHTML = data.user[0].first_name
+            $(".modal-body")[0].querySelector(".FirstName").innerHTML = data.user[0].first_name
+            $(".modal-body")[0].querySelector(".LastName").innerHTML =  data.user[0].last_name  
+            $(".modal-body")[0].querySelector(".NickName").innerHTML =  data.user[0].nickname  
+            $(".modal-body")[0].querySelector(".Bio").innerHTML =  data.user[0].bio  
+            $(".modal-body")[0].querySelector(".EmailAddress").innerHTML =  data.user[0].email  
+            $(".modal-body")[0].querySelector(".Username").innerHTML =  data.user[0].username  
+
+            console.log("{{reciever.username}}")
+
+          $(".modal-body")[0].querySelector(".more-link").innerHTML = ""
+        if(data.user[0].username == "{{request.user.username}}"){
+            var sittingLink = document.createElement("a");
+            sittingLink.setAttribute("class", "card-link updateProfile  text-decoration-none btn btn-secondary");
+            sittingLink.setAttribute("href", "{% url 'updateProfile' %}");
+            sittingLink.innerHTML = "setting"
+            $(".modal-body")[0].querySelector(".more-link").appendChild(sittingLink)
+
+            
+        }else{
+            var sittingLink = document.createElement("a");
+            sittingLink.setAttribute("class", "card-link deleteFriend  text-decoration-none btn btn-secondary");
+            sittingLink.setAttribute("href", "{% url 'deleteFriend' user.username %}");
+            sittingLink.innerHTML = "delete friend"
+             $(".modal-body")[0].querySelector(".more-link").appendChild(sittingLink)
+            }
+           
+        }
+    });
+}
+
+</script>

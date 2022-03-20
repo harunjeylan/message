@@ -1,0 +1,89 @@
+{% load static %}
+{% load %}
+<div class="d-none" id="display-0">
+  <video id="video-display" controls width="100%" muted>
+    <source>Sorry, your browser doesn't support objectded videos.
+  </video>
+  {% comment %} <object id="object-display" width="50%"></object> {% endcomment %}
+<div id="object-display" class="w-100">
+  <a class="" download><i class="fa fa-download"></i></a>
+</div>
+  {% comment %} <a id="object-display"></a> {% endcomment %}
+  <audio id="audio-display" controls>
+    <source>Your browser does not support the audio tag.
+  </audio>
+  <div class="display-1" id="display-1">
+    <div class="col-sm-6  col-lg-4 mb-4 ms-auto display-a  mt-5" style="width: fit-content;max-width: 80%;">
+      
+      <img src="{{request.user.profile.avater.url}}" alt="twbs" width="32" height="32"
+        class="rounded-circle image position-absolute top-5 end-0 me-2 flex-shrink-0">
+      <div class="card shadow rounded-xxl ms-auto mt-2 me-5">
+        <div class="dropdown position-absolute top-5 end-5 flex-shrink-0">
+          <button class="btn btn-outline-primary btn-arrow-left btn-sm m-1" type="button" id="dropdownMenuButton1"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="visually-hidden"  value="...">
+          </button>
+
+        <ul class="dropdown-menu messMenu" style="width: fit-content" aria-labelledby="dropdownMenuButton1">
+          {% csrf_token %}
+        </ul>
+        </div>
+        <br>
+          <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text  textMess" id="textMess"></p>
+          </div>
+        </div>
+        <small class="opacity-50  float-end me-5 mt-1 timeMess text-nowrap"></small>
+    </div>
+  </div>
+  <div class="display-2" id="display-2">
+    <div class="col-sm-6 col-lg-4 mb-4  display-a mt-5">
+      
+      <img src="{{reciever.profile.avater.url}}" alt="twbs" width="32" height="32"
+        class="rounded-circle image position-absolute top-5 start-0 ms-2 flex-shrink-0">
+      <div class="card shadow rounded-xxl mt-2 ms-5">
+        <div class="dropdown position-absolute top-5 start-5  flex-shrink-0" >
+          <button class="btn btn-outline-primary btn-arrow-left btn-sm m-1" type="button" id="dropdownMenuButton1"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="visually-hidden" value="...">
+          </button>
+        <ul class="dropdown-menu messMenu " style="width: fit-content" aria-labelledby="dropdownMenuButton1">
+         {% csrf_token %}
+        </ul>
+      </div><br>
+        <div class="card-body">
+          <h5 class="card-title"></h5>
+          <p class="card-text  textMess" id="textMess"></p>
+        </div>
+      </div>
+      <small class="opacity-50 ms-5 mt-1 timeMess text-nowrap"></small>
+    </div>
+  </div>
+</div>
+
+<div class="col-lg-8 col-md-6 col-0 {% if page == 'home' %} d-none {% endif %} d-md-flex bg-body shadow messages-col " id="messages-col">
+    <div class="mt-5"></div>
+    <div class="list-group w-100 ">
+      <div class="display-message w-100" id="display-message">
+      </div>
+    </div>
+    <button class="btn btn-outline-primary position-fixed"
+    style="bottom: 5rem;right: 1rem;"
+     type="button" id="go-down" value="down">||</button>
+    {% if page == 'message' %}
+    <div class=" chat-box bg-body shadow">
+      <form class="d-flex messageInput input-group" id="sendMessageForm" mode="send">
+        {% csrf_token %}
+        <input type="file" class="col-3 form-control " name="file" id="fileInput" style="flex-grow: 0;flex-basis: 100px;">
+        <textarea class="form-control" rows="1" id="message" id="comment" name="text"></textarea>
+        {% comment %} <input type="text" class="form-control" name="text" id="message" width="100px" /> {% endcomment %}
+        <button class="btn btn-outline-primary" type="submit" value="send">send</button>
+        
+      </form>
+    </div>
+    {% endif %}
+</div>
+
+
+
