@@ -29,7 +29,7 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = ['harun-message.herokuapp.com', '*']
-DEBUG = False
+# DEBUG = False
 
 # Application definition
 
